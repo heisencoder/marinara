@@ -186,6 +186,16 @@ class PomodoroTimer extends EventEmitter
       this.timer.removeAllListeners();
     }
 
+    // Round duration to nearest 30 minutes
+    if (this.phase === Phase.Focus) {
+      const minutes = new Date().getMinutes() % 30;
+      if (minutes > 15) {
+        duration += 30 - minutes;
+      } else {
+        duration =- minutes;
+      }
+    }
+
     this.timer = new this.timerType(Math.floor(duration * 60), 60);
     this.timer.observe(this);
   }
