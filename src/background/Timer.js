@@ -181,22 +181,30 @@ class PomodoroTimer extends EventEmitter
       [Phase.LongBreak]: this.settings.longBreak
     }[this.phase];
 
+    console.log(this.settings);
+    console.log('duration = ' + duration);
+
     if (this.timer) {
       this.timer.stop();
       this.timer.removeAllListeners();
     }
 
+    let adjustment = 0;
     // Round duration to nearest 30 minutes
     if (this.phase === Phase.Focus) {
-      const minutes = new Date().getMinutes() % 30;
+      let minutes = new Date().getMinutes() % 30;
+      console.log('minutes = ' + minutes);
       if (minutes > 15) {
-        duration += 30 - minutes;
+        adjustment = 30 - minutes;
       } else {
-        duration =- minutes;
+        adjustment = -minutes;
       }
     }
 
-    this.timer = new this.timerType(Math.floor(duration * 60), 60);
+    let adjustedDuration = duration + adjustment;
+    console.log('phase = ' + this.phase + ' duration = ' + duration + ' adjustedDuration = ' + adjustedDuration);
+
+    this.timer = new this.timerType(Math.floor(adjustedDuration * 60), 60);
     this.timer.observe(this);
   }
 
